@@ -1,0 +1,59 @@
+--KALICI ÝÞLEMLER.
+BEGIN TRY 
+BEGIN TRANSACTION 
+INSERT INTO Kisiler(PersonelNumara,PersonelAdý)
+VALUES (8,'SSSS')
+COMMIT TRANSACTION;--ÝÞLEMLERÝN KALICI OLMASINI SAÐLIYOR.
+END TRY
+BEGIN CATCH
+SELECT ERROR_NUMBER() AS ErrNum, ERROR_MESSAGE() AS ErrMsg;
+ IF (XACT_STATE()) = -1  -- Herhangi bir transaction var mý diye kontrol eder.
+ BEGIN
+ ROLLBACK TRANSACTION;
+ END;
+ ELSE
+SELECT ERROR_NUMBER() AS ErrNum, ERROR_MESSAGE() AS ErrMsg;
+ ROLLBACK TRANSACTION; -- YAPILAN ÝÞLEMLERÝN GERÝ ALINMASINI SAÐLAR.
+END CATCH; 
+
+
+
+--BURADAKÝ ÝÞLEMLER KALICI DEÐÝL.
+BEGIN TRANSACTION --Ýþlem bu satýrdan itibaren baþlangýcý bildiriyoruz.
+DELETE FROM Kisiler WHERE PersonelAdý LIKE '%ssss%' --Sonu test ile bitenleri silecek
+ROLLBACK TRANSACTION
+
+
+
+--KALICI ÝÞLEMLER.
+BEGIN TRANSACTION
+BEGIN TRY
+	BEGIN
+		DELETE FROM Kisiler WHERE PersonelAdý LIKE '%ssss%' --Sonu test ile bitenleri silecek
+	END
+
+COMMIT TRANSACTION 
+
+END TRY 
+
+BEGIN CATCH 
+	ROLLBACK TRANSACTION
+END CATCH
+
+
+
+
+------
+SELECT* FROM Kisiler
+
+
+
+
+
+
+
+
+
+
+
+
